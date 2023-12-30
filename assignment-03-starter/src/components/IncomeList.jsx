@@ -2,7 +2,24 @@ import { formatMoney } from "../utils/format-money";
 import { useEntries } from "../hooks/useEntries";
 
 export default function IncomeList() {
-  const { entries } = useEntries();
+  const { entries, setEntries } = useEntries();
+  // const [filterData,setfilteredData]= useState([])
+  const handleDelete = id =>{
+    console.log("deleteid:",id);
+    const remaining = entries.filter(cart=>cart.id!==id);
+    setEntries(remaining);
+  }
+  const handleUpdate = (id) => {
+    const newValue = prompt("Enter the new value:");
+
+    if (newValue !== null) {
+      const updatedEntries = entries.map((entry) =>
+        entry.id === id ? { ...entry, value: parseFloat(newValue) } : entry
+      );
+
+      setEntries(updatedEntries);
+    }
+  };
   const incomeEntries = entries.filter((entry) => entry.type === "income");
 
   return (
@@ -24,7 +41,8 @@ export default function IncomeList() {
                     {formatMoney(income.value)}
                   </span>
                   <span className="ml-2 hidden cursor-pointer font-medium text-red-500 group-hover:inline-block">
-                    Delete
+                  <button className="btn bg-red-600 rounded-md text-white p-1 mr-2" onClick={()=>handleDelete(income.id)}> Delete</button>
+                  <button className="btn bg-blue-600 rounded-md text-white p-1"onClick={()=>handleUpdate(income.id)}> Update</button>
                   </span>
                 </div>
               </div>
